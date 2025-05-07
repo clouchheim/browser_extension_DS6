@@ -20,18 +20,20 @@ document.getElementById("summarizeBtn").addEventListener("click", () => {
       async (results) => {
         const selectedText = results[0]?.result || "No text selected.";
         document.getElementById("summary").innerText = 'Summarizing...';
+
+        const config = await fetch(chrome.runtime.getURL("config.json")).then(res => res.json());
+        const apikey = config.API_KEY;
+
         const bodyinfo = {
           model: "meta-llama/llama-4-scout-17b-16e-instruct",
           messages: [
             {
               role: "user",
-              content: `Give me a two sentence summary of this text, only output the summary:\n\n${selectedText}`
+              content: `Give me a two sentence summary of this text, make sure to summarize all of the text not missing major sections, only output the summary:\n\n${selectedText}`
             }
           ],
           temperature: 1,
         };
-
-        const apikey = "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";
 
         const headers = {
           "Authorization": `Bearer ${apikey}`,
