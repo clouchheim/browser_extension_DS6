@@ -2,54 +2,21 @@
 <html>
 <head>
   <title>Summarize Text</title>
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      padding: 16px;
-      width: 320px;
-      background-color: #fff;
-      color: #333;
-    }
-
-    h3 {
-      margin-top: 0;
-      font-size: 18px;
-      color: #b71c1c;
-    }
-
-    #summarizeBtn {
-      background-color: #d32f2f;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 10px 16px;
-      font-size: 14px;
-      cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      transition: background-color 0.3s ease;
-    }
-
-    #summarizeBtn:hover {
-      background-color: #b71c1c;
-    }
-
-    #summary {
-      margin-top: 16px;
-      white-space: pre-wrap;
-      padding: 12px;
-      border: 1px solid #eee;
-      border-radius: 4px;
-      background-color: #fafafa;
-      font-size: 14px;
-    }
-  </style>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h3>Summarize Highlighted Text</h3>
+  <p id="instructions">Highlight text on the page, then click the button below to summarize it.</p>
+
+  <label for="summaryFormat">Summary format:</label>
+  <select id="summaryFormat">
+    <option value="two_sentences">Two Sentences</option>
+    <option value="bullets">Bullet Points</option>
+  </select>
+
   <button id="summarizeBtn">Summarize</button>
-  <div id="summary"></div>
+  <div id="summary" style="display: none;"></div>
   <script src="popup.js"></script>
 </body>
 </html>
-

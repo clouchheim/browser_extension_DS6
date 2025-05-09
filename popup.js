@@ -1,9 +1,17 @@
 function sendMessage (selectedText, simplifiedText) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, {action: "triggerFunction", selectedText: selectedText, simplifiedText: simplifiedText}, function(response) {
-      if (response) {
-        // Handle the response from content.js (optional)
-        console.log(response.result);
+    chrome.tabs.sendMessage(tabs[0].id, 
+      {
+        action: "triggerFunction", 
+        selectedText: selectedText, 
+        simplifiedText: simplifiedText
+      }, 
+      function(response) {
+        if (response) {
+
+          // can handel the content.js stuff here
+
+          console.log(response.result);
       }
     });
   });
@@ -11,6 +19,13 @@ function sendMessage (selectedText, simplifiedText) {
 
 document.getElementById("summarizeBtn").addEventListener("click", () => {
   
+  document.getElementById("instructions").style.display = "none"; // hide instructions
+  const summaryDiv = document.getElementById("summary"); // show summary box
+  summaryDiv.style.display = "block";
+  summaryDiv.innerText = "Summarizing...";
+
+  const selectedFormat = document.getElementById("summaryFormat").value; // the custom summarization choice
+
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.scripting.executeScript(
       {
@@ -19,18 +34,37 @@ document.getElementById("summarizeBtn").addEventListener("click", () => {
       },
       async (results) => {
         const selectedText = results[0]?.result || "No text selected.";
-        document.getElementById("summary").innerText = 'Summarizing...';
 
-        const config = await fetch(chrome.runtime.getURL("config.json")).then(res => res.json());
-        const apikey = config.API_KEY;
+        const config = await fetch(chrome.runtime.getURL("config.json")).then(res => 
+          res.json()
+        );
+        const apikey = config.API_KEY; // make your own config for this, from groq not openai
+        
+        let prompt = "";
+        switch (selectedFormat) {
+          case "two_sentences":
+            prompt = `Give me a two sentence summary of this text. 
+                      Be sure to cover all important information.
+                      Do not include the prompt in the output:\n\n${selectedText}`;
+            break;
+          case "bullets":
+            prompt = `Summarize this text into 3 concise bullet points 
+                      that cover all key ideas. Do not include the prompt in
+                      the output:\n\n${selectedText}`;
+            break;
+          default:
+            prompt = `Give me a two sentence summary of this text. 
+            Be sure to cover all important information.
+            Do not include the prompt in the output:\n\n${selectedText}`;
+        }
 
         const bodyinfo = {
           model: "meta-llama/llama-4-scout-17b-16e-instruct",
           messages: [
             {
               role: "user",
-              content: `Give me a two sentence summary of this text, make sure to summarize all of the text not missing major sections, only output the summary:\n\n${selectedText}`
-            }
+              content: prompt,
+            },
           ],
           temperature: 1,
         };
