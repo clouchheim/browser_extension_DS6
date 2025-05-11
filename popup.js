@@ -1,24 +1,23 @@
+selectedTextUniv = ""
+summarizedTextUniv = ""
+
 function sendMessage (selectedText, simplifiedText) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, 
-      {
-        action: "triggerFunction", 
-        selectedText: selectedText, 
-        simplifiedText: simplifiedText
-      }, 
-      function(response) {
-        if (response) {
-
-          // can handel the content.js stuff here
-
-          console.log(response.result);
+    chrome.tabs.sendMessage(tabs[0].id, {action: "triggerFunction", selectedText: selectedText, simplifiedText: simplifiedText}, function(response) {
+      if (response) {
+        console.log(response.result);
       }
     });
   });
 }
+console.log("test")
+document.getElementById("replaceBtn").addEventListener("click", () => {
+  console.log(selectedTextUniv)
+  console.log(summarizedTextUniv)
+  sendMessage(selectedTextUniv, summarizedTextUniv);
+});
 
 document.getElementById("summarizeBtn").addEventListener("click", () => {
-  
   document.getElementById("instructions").style.display = "none"; // hide instructions
   const summaryDiv = document.getElementById("summary"); // show summary box
   summaryDiv.style.display = "block";
@@ -34,6 +33,7 @@ document.getElementById("summarizeBtn").addEventListener("click", () => {
       },
       async (results) => {
         const selectedText = results[0]?.result || "No text selected.";
+        selectedTextUniv = selectedText
 
         const config = await fetch(chrome.runtime.getURL("config.json")).then(res => 
           res.json()
@@ -90,12 +90,11 @@ document.getElementById("summarizeBtn").addEventListener("click", () => {
           const data = await response.json();
 
           summarizedText = data.choices?.[0]?.message?.content || summarizedText;
+          summarizedTextUniv = summarizedText
         } catch (error) {
           console.error("There has been an error: ", error);
           alert("There has been an error. Check console for details");
         }
-
-        sendMessage(selectedText, summarizedText);
 
         document.getElementById("summary").innerText = summarizedText;
       }
