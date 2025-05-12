@@ -42,6 +42,12 @@ document.getElementById("summarizeBtn").addEventListener("click", () => {
         
         let prompt = "";
         switch (selectedFormat) {
+          case "general_summary":
+            prompt = `Give me a summary of this text so that the resulting amount
+                      of sentences are less than what is given. 
+                      Be sure to cover all important information.
+                      Do not include the prompt in the output:\n\n${selectedText}`;
+            break;
           case "two_sentences":
             prompt = `Give me a two sentence summary of this text. 
                       Be sure to cover all important information.
@@ -52,8 +58,14 @@ document.getElementById("summarizeBtn").addEventListener("click", () => {
                       that cover all key ideas. Do not include the prompt in
                       the output:\n\n${selectedText}`;
             break;
+          case "expanded_def":
+            prompt = `Give me back the following text, but for any words that would be considered 
+            specialized terminology, provide a brief definition of the word in parantheses immediately
+            following the specialized word. Do not include the prompt in the output:\n\n${selectedText}`;
+            break;
           default:
-            prompt = `Give me a two sentence summary of this text. 
+            prompt = `Give me a summary of this text so that the resulting amount
+            of sentences are less than what is given. 
             Be sure to cover all important information.
             Do not include the prompt in the output:\n\n${selectedText}`;
         }

@@ -41,7 +41,13 @@ function findAndReplace(selectedText, simplifiedText) {
   new_div.appendChild(p1);
 
   const p2 = document.createElement('p');
-  p2.textContent = simplifiedText;
+  const mark = document.createElement('mark');
+  if (simplifiedText.includes("•")) {
+    console.log("bullets");
+  }
+  simplifiedText = simplifiedText.replaceAll("•", "<br/> •")
+  mark.innerHTML = simplifiedText;
+  p2.appendChild(mark);
   new_div.appendChild(p2);
 
   const p3 = document.createElement('p');
